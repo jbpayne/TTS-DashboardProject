@@ -63,7 +63,6 @@ export class TableComponent implements OnInit {
   }
 
   private populateProductsArray() {
-    this.page = this.page > 0 ? this.page -1 : 0;
     this.api.getProducts(this.size, this.page, this.sort).subscribe(res => {
       return this.products = res.map(product => {
         const categoryId = product._embedded.category ? product._embedded.category.categoryId : 0;
