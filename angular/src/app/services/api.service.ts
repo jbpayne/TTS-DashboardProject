@@ -14,6 +14,10 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
+  getCollectionSize() {
+    return this.httpClient.get(this.productUrl + '?size=1').pipe(map((res: any) => res.page.totalElements));
+  }
+
   getProducts(size: number, page: number, sort: string[]) {
   return this.httpClient.get(`${this.productUrl}?size=${size}&page=${page + sort.map(sort => '&sort=' + sort).join('')}`)
       .pipe(map((response: any) => response._embedded.products));

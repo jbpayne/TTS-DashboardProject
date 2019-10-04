@@ -13,8 +13,8 @@
                             Category
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <button *ngFor="let c of categories" class="dropdown-item"
-                                type="button" (click)="">{{ c.categoryName }}</button>
+                            <button *ngFor="let c of categories" class="dropdown-item" type="button"
+                                (click)="populateProductsArray()">{{ c.categoryName }}</button>
                         </div>
                     </div>
                 </th>
@@ -54,11 +54,11 @@
                 <td class="align-middle text-center" id="product-{{product.id}}">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary" data-toggle="modal"
-                            data-target="#updateProductForm">
+                        [attr.data-target]="'#updateProduct' + product.id">
                             <fa-icon [icon]="faEdit"></fa-icon>
                         </button>
 
-                        <div class="modal fade" id="updateProductForm" tabindex="-1">
+                        <div class="modal fade" id="updateProduct{{product.id}}" tabindex="-1">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -80,7 +80,7 @@
                                             <div class="form-group">
                                                 <label for="category">Product Category</label>
                                                 <select class="form-control" formControlName="category" required>
-                                                    <option *ngFor="let c of categories" [ngValue]="c._links.self.href">
+                                                    <option *ngFor="let c of categories" [ngValue]="c._links.self.href" [attr.selected]="product.category.categoryId == c.categoryId ? 'selected' : null">
                                                         {{ c.categoryName }}</option>
                                                 </select>
                                             </div>
@@ -92,16 +92,19 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="productPrice">Full Price $ </label>
-                                                <input class="m-2" type="number" formControlName="fullPrice" value="{{product.fullPrice}}" required>
+                                                <label for="productPrice">Full Price $</label>
+                                                <input class="m-2" type="number" formControlName="fullPrice"
+                                                    value="{{product.fullPrice}}" required>
                                             </div>
                                             <div class="form-group">
-                                                <label for="productSalePrice">Sale Price $ </label>
-                                                <input class="m-2" type="number" formControlName="salePrice" value="{{product.salePrice}}" required>
+                                                <label for="productSalePrice">Sale Price $</label>
+                                                <input class="m-2" type="number" formControlName="salePrice"
+                                                    value="{{product.salePrice}}" required>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    <input type="checkbox" class="mb-4" formControlName="availability" [checked]="product.availability">
+                                                    <input type="checkbox" class="mb-4" formControlName="availability"
+                                                        [checked]="product.availability">
                                                     Available
                                                 </label>
                                             </div>
@@ -112,11 +115,11 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
 
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProduct">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" [attr.data-target]="'#deleteProduct' + product.id">
                             <fa-icon [icon]="faTrashAlt"></fa-icon>
                         </button>
 
-                        <div class="modal fade" id="deleteProduct" tabindex="-1">
+                        <div class="modal fade" id="deleteProduct{{product.id}}" tabindex="-1">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -150,3 +153,7 @@
         </tbody>
     </table>
 </div>
+<nav aria-label="Table Navigation">
+    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="size" [rotate]="true" [boundaryLinks]="true" (pageChange)="populateProductsArray()">
+    </ngb-pagination>
+</nav>

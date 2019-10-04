@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faSync, faEdit, faTrashAlt, faWindowClose, faSort } from '@fortawesome/free-solid-svg-icons';
 import { AlertsComponent } from './alerts/alerts.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { AlertsComponent } from './alerts/alerts.component';
   exports: [
     HttpClientModule,
     FontAwesomeModule,
-    AlertsComponent
+    AlertsComponent,
+    NgbModule
   ]
 })
 

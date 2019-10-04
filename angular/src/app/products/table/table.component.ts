@@ -16,6 +16,7 @@ export class TableComponent implements OnInit {
   suppliers: [];
   products: Product[];
 
+  collectionSize: number;
   page: number;
   size: number;
   sort: string[];
@@ -40,8 +41,9 @@ export class TableComponent implements OnInit {
   constructor(private api: ApiService, private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.api.getCollectionSize().subscribe(res => this.collectionSize = res);
     this.page = 0;
-    this.size = 6;
+    this.size = 10;
     this.sort = ['id,asc'];
     this.alertSuccess = document.getElementsByClassName("alert-success")[0];
     this.alertInfo = document.getElementsByClassName("alert-info")[0];
@@ -61,6 +63,7 @@ export class TableComponent implements OnInit {
   }
 
   private populateProductsArray() {
+    this.page = this.page > 0 ? this.page -1 : 0;
     this.api.getProducts(this.size, this.page, this.sort).subscribe(res => {
       return this.products = res.map(product => {
         const categoryId = product._embedded.category ? product._embedded.category.categoryId : 0;
