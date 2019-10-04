@@ -1,0 +1,152 @@
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><button class="btn btn-link" (click)="toggleSort('id')">ID&nbsp;<fa-icon [icon]="faSort"></fa-icon>
+                    </button></th>
+                <th><button class="btn btn-link" (click)="toggleSort('productName')">Product&nbsp;Name&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th>
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Category
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button *ngFor="let c of categories" class="dropdown-item"
+                                type="button" (click)="">{{ c.categoryName }}</button>
+                        </div>
+                    </div>
+                </th>
+                <th><button class="btn btn-link" (click)="toggleSort('fullPrice')">Full&nbsp;Price&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th><button class="btn btn-link" (click)="toggleSort('salePrice')">Sale&nbsp;Price&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th><button class="btn btn-link" (click)="toggleSort('discount')">Discount&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th><button class="btn btn-link" (click)="toggleSort('availability')">Available&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th>
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Supplier
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button *ngFor="let s of suppliers" class="dropdown-item"
+                                type="button">{{ s.supplierName }}</button>
+                        </div>
+                    </div>
+                </th>
+                <th class="align-middle">Edit/Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products; let i = index">
+                <td class="align-middle">{{product.id}}</td>
+                <td class="align-middle">{{product.productName}}</td>
+                <td class="align-middle">{{product.category?.categoryName}}</td>
+                <td class="align-middle">{{product.fullPrice | currency:'USD'}}</td>
+                <td class="align-middle">{{product.salePrice | currency:'USD'}}</td>
+                <td class="align-middle">{{product.discount | percent:'.0-1'}}</td>
+                <td class="align-middle">{{product.availability ? 'Yes' : 'No' }}</td>
+                <td class="align-middle">{{product.supplier?.supplierName}}</td>
+                <td class="align-middle text-center" id="product-{{product.id}}">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal"
+                            data-target="#updateProductForm">
+                            <fa-icon [icon]="faEdit"></fa-icon>
+                        </button>
+
+                        <div class="modal fade" id="updateProductForm" tabindex="-1">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">
+                                            <span>Update Product</span>
+                                        </h4>
+                                        <button type="button" class="btn btn-link close ml-auto" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">
+                                                <fa-icon [icon]="faWindowClose"></fa-icon>
+                                            </span></button>
+                                    </div>
+                                    <div class="modal-body text-left p-4">
+                                        <form [formGroup]="productForm" (ngSubmit)="onSubmit(product.id)">
+                                            <div class="form-group">
+                                                <label for="productName">Product Name</label>
+                                                <input type="text" class="form-control" formControlName="productName"
+                                                    value="{{product.productName}}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="category">Product Category</label>
+                                                <select class="form-control" formControlName="category" required>
+                                                    <option *ngFor="let c of categories" [ngValue]="c._links.self.href">
+                                                        {{ c.categoryName }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="supplier">Product Supplier</label>
+                                                <select class="form-control" formControlName="supplier" required>
+                                                    <option *ngFor="let s of suppliers" [ngValue]="s._links.self.href">
+                                                        {{ s.supplierName }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="productPrice">Full Price $ </label>
+                                                <input class="m-2" type="number" formControlName="fullPrice" value="{{product.fullPrice}}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="productSalePrice">Sale Price $ </label>
+                                                <input class="m-2" type="number" formControlName="salePrice" value="{{product.salePrice}}" required>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" class="mb-4" formControlName="availability" [checked]="product.availability">
+                                                    Available
+                                                </label>
+                                            </div>
+                                            <button type="submit" [disabled]="!productForm.valid">Submit</button>
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProduct">
+                            <fa-icon [icon]="faTrashAlt"></fa-icon>
+                        </button>
+
+                        <div class="modal fade" id="deleteProduct" tabindex="-1">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="modal-title">Product deletion</h4>
+                                        <button type="button" class="btn btn-link close ml-auto" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">
+                                                <fa-icon [icon]="faWindowClose"></fa-icon>
+                                            </span></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Are you sure you want to delete <p class="text-primary">
+                                                    Product ID# {{product.id}}, "{{product.productName}}"?</p></strong>
+                                        </p>
+                                        <p>All information associated with this product will be permanently deleted.
+                                            <span class="text-danger">This operation can not be undone.</span>
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
+                                            aria-label="Cancel">Cancel</button>
+                                        <button type="button" class="btn btn-danger"
+                                            (click)="deleteProduct(product.id, i)">Ok</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

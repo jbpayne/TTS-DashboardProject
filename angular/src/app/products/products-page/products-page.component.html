@@ -1,0 +1,25 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm main">
+            <h1 class="page-header">Dashboard:</h1>
+
+            <h2 class="sub-header m-2">Products</h2>
+
+            <!-- Add Product Form -->
+            <app-modal-form></app-modal-form>
+
+            <button type="button" class="btn btn-secondary-outline mb-2" (click)="reload()">
+                <fa-icon [icon]="faSync"></fa-icon>
+            </button>
+
+            <!-- Alerts -->
+            <app-alerts></app-alerts>
+
+            <!-- Table -->
+            <app-table></app-table>
+
+            <app-page-navbar></app-page-navbar>
+        </div>
+    </div>
+
+</div>
