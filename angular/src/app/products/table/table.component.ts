@@ -49,7 +49,6 @@ export class TableComponent implements OnInit {
     this.alertInfo = document.getElementsByClassName("alert-info")[0];
     this.alertWarning = document.getElementsByClassName("alert-warning")[0];
 
-    this.showSortOrder();
     this.populateProductsArray();
     this.populateCategoriesArray();
     this.populateSuppliersArray();
@@ -69,12 +68,15 @@ export class TableComponent implements OnInit {
 
   populateProductsArray() {
     this.setCollectionSize();
+    $("#checkbox").prop("checked", false);
+    this.showSortOrder();
     this.api.getProducts(this.size, this.page, this.sort).subscribe(res => {
       return this.products = res.map(this.createProduct());
     });
   }
 
   populateProductsByCategory(id, name) {
+    $("#checkbox").prop("checked", false);
     this.alertSuccess.classList.add('d-none');
     this.alertInfo.classList.add('d-none');
     this.alertWarning.classList.remove('d-none');
@@ -84,12 +86,13 @@ export class TableComponent implements OnInit {
       this.alertSuccess.classList.add('d-none');
       this.alertWarning.classList.add('d-none');
       this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in category: ${res[0]._embedded.category.categoryName}`;
+      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in category: ${name}`;
       return this.products = res.map(this.createProduct());
     });
   }
 
   populateProductsBySupplier(id, name) {
+    $("#checkbox").prop("checked", false);
     this.alertSuccess.classList.add('d-none');
     this.alertInfo.classList.add('d-none');
     this.alertWarning.classList.remove('d-none');
@@ -112,6 +115,18 @@ export class TableComponent implements OnInit {
       const supplierName = product._embedded.supplier ? product._embedded.supplier.supplierName : "None";
       return new Product(product.id, product.productName, { categoryId: categoryId, categoryName: categoryName }, product.fullPrice, product.salePrice, product.discount, product.availability, { supplierId: supplierId, supplierName: supplierName });
     };
+  }
+
+  showAvailable() {
+    if ($("#checkbox").is(':checked')) {
+      this.products = this.products.filter(product => product.$availability === true);
+      this.alertSuccess.classList.add('d-none');
+      this.alertInfo.classList.remove('d-none');
+      this.alertInfo.innerHTML += `, <strong>Available: Yes`
+    }
+    else {
+      this.populateProductsArray();
+    }
   }
 
   onSubmit(id) {
@@ -137,7 +152,7 @@ export class TableComponent implements OnInit {
 
   toggleSort(field) {
     if (!this.sort.includes(`${field},desc`) && !this.sort.includes(`${field},asc`)) {
-      this.sort.push(`${field},asc`);
+      this.sort.unshift(`${field},asc`);
     }
     else if (this.sort.includes(`${field},asc`)) {
       this.sort[this.sort.indexOf(`${field},asc`)] = `${field},desc`;
@@ -145,11 +160,10 @@ export class TableComponent implements OnInit {
     else {
       this.sort.splice(this.sort.indexOf(`${field},desc`), 1)
     }
-    this.showSortOrder();
     this.populateProductsArray();
   }
 
-  private showSortOrder() {
+  showSortOrder() {
     this.alertSuccess.classList.add('d-none');
     this.alertInfo.classList.remove('d-none');
     this.alertInfo.innerHTML =
@@ -164,4 +178,10 @@ export class TableComponent implements OnInit {
           .replace("fullPrice", "Full Price")
           .replace("salePrice", "Sale Price"))}`;
   }
+values = 0;
+  onKey(event) {
+    if (+event.key > 0)
+    this.values += event.key;
+  }
 }
+

@@ -6,7 +6,6 @@ import { TableComponent } from './table/table.component';
 import { ModalFormComponent } from './modal-form/modal-form.component';
 import { PageNavbarComponent } from './page-navbar/page-navbar.component';
 import { ModuleRouting } from './products-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 
 
@@ -21,8 +20,7 @@ import { ApiService } from '../services/api.service';
   imports: [
     CommonModule,
     SharedModule,
-    ModuleRouting,
-    ReactiveFormsModule,
+    ModuleRouting
   ],
   exports: [
     TableComponent,

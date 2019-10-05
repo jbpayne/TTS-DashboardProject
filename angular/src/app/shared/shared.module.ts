@@ -5,6 +5,8 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { faSync, faEdit, faTrashAlt, faWindowClose, faSort } from '@fortawesome/free-solid-svg-icons';
 import { AlertsComponent } from './alerts/alerts.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     FontAwesomeModule,
     AlertsComponent,
-    NgbModule
+    NgbModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 

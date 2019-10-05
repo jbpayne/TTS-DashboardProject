@@ -4,3 +4,7 @@
   font-weight: bold !important;
   color: black !important;
 }
+
+#checkbox {
+  top: 4px;
+}
