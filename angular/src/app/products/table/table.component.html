@@ -14,7 +14,7 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button *ngFor="let c of categories" class="dropdown-item" type="button"
-                                (click)="populateProductsByCategory(c.categoryId)">{{ c.categoryName }}</button>
+                                (click)="populateProductsByCategory(c.categoryId, c.categoryName)">{{ c.categoryName }}</button>
                         </div>
                     </div>
                 </th>
@@ -34,7 +34,7 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button *ngFor="let s of suppliers" class="dropdown-item"
-                                type="button" (click)="populateProductsBySupplier(s.supplierId)">{{ s.supplierName }}</button>
+                                type="button" (click)="populateProductsBySupplier(s.supplierId, s.supplierName)">{{ s.supplierName }}</button>
                         </div>
                     </div>
                 </th>

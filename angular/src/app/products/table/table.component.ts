@@ -28,6 +28,7 @@ export class TableComponent implements OnInit {
 
   alertSuccess: Element;
   alertInfo: Element;
+  alertWarning: Element;
 
   productForm = this.fb.group({
     productName: ['', Validators.required],
@@ -46,6 +47,7 @@ export class TableComponent implements OnInit {
     this.sort = ['id,asc'];
     this.alertSuccess = document.getElementsByClassName("alert-success")[0];
     this.alertInfo = document.getElementsByClassName("alert-info")[0];
+    this.alertWarning = document.getElementsByClassName("alert-warning")[0];
 
     this.showSortOrder();
     this.populateProductsArray();
@@ -72,23 +74,32 @@ export class TableComponent implements OnInit {
     });
   }
 
-  populateProductsByCategory(id) {
+  populateProductsByCategory(id, name) {
+    this.alertSuccess.classList.add('d-none');
+    this.alertInfo.classList.add('d-none');
+    this.alertWarning.classList.remove('d-none');
+    this.alertWarning.innerHTML = `Loading products from category: ${name}`;
     this.api.getProductsByCategory(id).subscribe((res: any) => {
       this.collectionSize = 1;
       this.alertSuccess.classList.add('d-none');
+      this.alertWarning.classList.add('d-none');
       this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in Category: ${res[0]._embedded.category.categoryName}`;
+      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in category: ${res[0]._embedded.category.categoryName}`;
       return this.products = res.map(this.createProduct());
     });
   }
 
-  populateProductsBySupplier(id) {
-    this.collectionSize = 1;
+  populateProductsBySupplier(id, name) {
+    this.alertSuccess.classList.add('d-none');
+    this.alertInfo.classList.add('d-none');
+    this.alertWarning.classList.remove('d-none');
+    this.alertWarning.innerHTML = `Loading products from supplier: ${name}`;
     this.api.getProductsBySupplier(id).subscribe((res: any) => {
       this.collectionSize = 1;
       this.alertSuccess.classList.add('d-none');
+      this.alertWarning.classList.add('d-none');
       this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products from Supplier: ${res[0]._embedded.supplier.supplierName}`;
+      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products from supplier: ${name}`;
       return this.products = res.map(this.createProduct());
     });
   }
