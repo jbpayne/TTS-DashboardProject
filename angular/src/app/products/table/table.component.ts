@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../../models/product';
-import { faEdit, faTrashAlt, faSort, faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faSort, faWindowClose, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from 'src/app/services/api.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
@@ -21,14 +21,14 @@ export class TableComponent implements OnInit {
   size: number;
   sort: string[];
 
-  faEdit = faEdit;
-  faTrashAlt = faTrashAlt;
-  faSort = faSort;
-  faWindowClose = faWindowClose;
+  faEdit: IconDefinition = faEdit;
+  faTrashAlt: IconDefinition = faTrashAlt;
+  faSort: IconDefinition = faSort;
+  faWindowClose: IconDefinition = faWindowClose;
 
-  alertSuccess;
-  alertInfo;
-  
+  alertSuccess: Element;
+  alertInfo: Element;
+
   productForm = this.fb.group({
     productName: ['', Validators.required],
     fullPrice: ['', [Validators.min(0.01), Validators.max(99.99), Validators.required]],
@@ -41,9 +41,8 @@ export class TableComponent implements OnInit {
   constructor(private api: ApiService, private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.api.getCollectionSize().subscribe(res => this.collectionSize = res);
     this.page = 0;
-    this.size = 10;
+    this.size = 5;
     this.sort = ['id,asc'];
     this.alertSuccess = document.getElementsByClassName("alert-success")[0];
     this.alertInfo = document.getElementsByClassName("alert-info")[0];
@@ -54,6 +53,10 @@ export class TableComponent implements OnInit {
     this.populateSuppliersArray();
   }
 
+  private setCollectionSize() {
+    this.api.getCollectionSize().subscribe(res => this.collectionSize = res);
+  }
+
   private populateCategoriesArray() {
     this.api.getCategories().subscribe(res => this.categories = res);
   }
@@ -62,27 +65,53 @@ export class TableComponent implements OnInit {
     this.api.getSuppliers().subscribe(res => this.suppliers = res);
   }
 
-  private populateProductsArray() {
+  populateProductsArray() {
+    this.setCollectionSize();
     this.api.getProducts(this.size, this.page, this.sort).subscribe(res => {
-      return this.products = res.map(product => {
-        const categoryId = product._embedded.category ? product._embedded.category.categoryId : 0;
-        const categoryName = product._embedded.category ? product._embedded.category.categoryName : "None";
-        const supplierId = product._embedded.supplier ? product._embedded.supplier.supplierId : 0;
-        const supplierName = product._embedded.supplier ? product._embedded.supplier.supplierName : "None";
-        return new Product(product.id, product.productName, { categoryId: categoryId, categoryName: categoryName }, product.fullPrice, product.salePrice, product.discount, product.availability, { supplierId: supplierId, supplierName: supplierName });
-      });
+      return this.products = res.map(this.createProduct());
     });
+  }
+
+  populateProductsByCategory(id) {
+    this.api.getProductsByCategory(id).subscribe((res: any) => {
+      this.collectionSize = 1;
+      this.alertSuccess.classList.add('d-none');
+      this.alertInfo.classList.remove('d-none');
+      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in Category: ${res[0]._embedded.category.categoryName}`;
+      return this.products = res.map(this.createProduct());
+    });
+  }
+
+  populateProductsBySupplier(id) {
+    this.collectionSize = 1;
+    this.api.getProductsBySupplier(id).subscribe((res: any) => {
+      this.collectionSize = 1;
+      this.alertSuccess.classList.add('d-none');
+      this.alertInfo.classList.remove('d-none');
+      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products from Supplier: ${res[0]._embedded.supplier.supplierName}`;
+      return this.products = res.map(this.createProduct());
+    });
+  }
+
+  private createProduct(): any {
+    return product => {
+      const categoryId = product._embedded.category ? product._embedded.category.categoryId : 0;
+      const categoryName = product._embedded.category ? product._embedded.category.categoryName : "None";
+      const supplierId = product._embedded.supplier ? product._embedded.supplier.supplierId : 0;
+      const supplierName = product._embedded.supplier ? product._embedded.supplier.supplierName : "None";
+      return new Product(product.id, product.productName, { categoryId: categoryId, categoryName: categoryName }, product.fullPrice, product.salePrice, product.discount, product.availability, { supplierId: supplierId, supplierName: supplierName });
+    };
   }
 
   onSubmit(id) {
     this.api.updateProduct(id, this.productForm.value).subscribe(res => {
-    document.getElementsByClassName("alert-info")[0].classList.add('d-none');
-    document.getElementsByClassName("alert-success")[0].classList.remove('d-none');
-    document.getElementsByClassName("alert-success")[0].innerHTML = `Product "${this.productForm.value.productName}" successfully updated.`;
-    this.populateProductsArray();
+      document.getElementsByClassName("alert-info")[0].classList.add('d-none');
+      document.getElementsByClassName("alert-success")[0].classList.remove('d-none');
+      document.getElementsByClassName("alert-success")[0].innerHTML = `Product "${this.productForm.value.productName}" successfully updated.`;
+      this.populateProductsArray();
       return res;
     });
-    $('.close').click(); 
+    $('.close').click();
   }
 
   deleteProduct(id: number, index: number) {

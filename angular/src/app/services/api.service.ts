@@ -23,6 +23,14 @@ export class ApiService {
       .pipe(map((response: any) => response._embedded.products));
   }
 
+  getProductsByCategory(id) {
+    return this.httpClient.get(this.categoryUrl + id + '/products').pipe(map((res: any) => res._embedded.products));
+  }
+
+  getProductsBySupplier(id) {
+    return this.httpClient.get(this.supplierUrl + id + '/products').pipe(map((res: any) => res._embedded.products));
+  }
+
   getCategories() {
     return this.httpClient.get(this.categoryUrl + '?size=100').pipe(map((res: any) => res._embedded.categories));
   }
