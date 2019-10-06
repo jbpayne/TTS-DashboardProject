@@ -3,7 +3,6 @@ import { Product } from '../../../models/product';
 import { faEdit, faTrashAlt, faSort, faWindowClose, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from 'src/app/services/api.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-table',
@@ -26,9 +25,8 @@ export class TableComponent implements OnInit {
   faSort: IconDefinition = faSort;
   faWindowClose: IconDefinition = faWindowClose;
 
-  alertSuccess: Element;
-  alertInfo: Element;
-  alertWarning: Element;
+  alertType: string;
+  message: string;
 
   productForm = this.fb.group({
     productName: ['', Validators.required],
@@ -43,15 +41,13 @@ export class TableComponent implements OnInit {
 
   ngOnInit() {
     this.page = 0;
-    this.size = 5;
+    this.size = 3;
     this.sort = ['id,asc'];
-    this.alertSuccess = document.getElementsByClassName("alert-success")[0];
-    this.alertInfo = document.getElementsByClassName("alert-info")[0];
-    this.alertWarning = document.getElementsByClassName("alert-warning")[0];
 
     this.populateProductsArray();
     this.populateCategoriesArray();
     this.populateSuppliersArray();
+    this.showSortOrder();
   }
 
   private setCollectionSize() {
@@ -69,7 +65,6 @@ export class TableComponent implements OnInit {
   populateProductsArray() {
     this.setCollectionSize();
     $("#checkbox").prop("checked", false);
-    this.showSortOrder();
     this.api.getProducts(this.size, this.page, this.sort).subscribe(res => {
       return this.products = res.map(this.createProduct());
     });
@@ -77,32 +72,24 @@ export class TableComponent implements OnInit {
 
   populateProductsByCategory(id, name) {
     $("#checkbox").prop("checked", false);
-    this.alertSuccess.classList.add('d-none');
-    this.alertInfo.classList.add('d-none');
-    this.alertWarning.classList.remove('d-none');
-    this.alertWarning.innerHTML = `Loading products from category: ${name}`;
+    this.alertType = 'warning';
+    this.message = `Loading products from category: ${name}`;
     this.api.getProductsByCategory(id).subscribe((res: any) => {
       this.collectionSize = 1;
-      this.alertSuccess.classList.add('d-none');
-      this.alertWarning.classList.add('d-none');
-      this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products in category: ${name}`;
+      this.alertType = 'info';
+      this.message = `<strong>Filter:</strong> All products in category: ${name}`;
       return this.products = res.map(this.createProduct());
     });
   }
 
   populateProductsBySupplier(id, name) {
     $("#checkbox").prop("checked", false);
-    this.alertSuccess.classList.add('d-none');
-    this.alertInfo.classList.add('d-none');
-    this.alertWarning.classList.remove('d-none');
-    this.alertWarning.innerHTML = `Loading products from supplier: ${name}`;
+    this.alertType = 'warning';
+    this.message = `Loading products from supplier: ${name}`;
     this.api.getProductsBySupplier(id).subscribe((res: any) => {
       this.collectionSize = 1;
-      this.alertSuccess.classList.add('d-none');
-      this.alertWarning.classList.add('d-none');
-      this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML = `<strong>Filter:</strong> All products from supplier: ${name}`;
+      this.alertType = 'info';
+      this.message = `<strong>Filter:</strong> All products from supplier: ${name}`;
       return this.products = res.map(this.createProduct());
     });
   }
@@ -120,20 +107,31 @@ export class TableComponent implements OnInit {
   showAvailable() {
     if ($("#checkbox").is(':checked')) {
       this.products = this.products.filter(product => product.$availability === true);
-      this.alertSuccess.classList.add('d-none');
-      this.alertInfo.classList.remove('d-none');
-      this.alertInfo.innerHTML += `, <strong>Available: Yes`
+      this.alertType = 'info';
+      this.message += `<strong> - Available: Yes</strong>`
     }
     else {
       this.populateProductsArray();
+      this.showSortOrder();
     }
   }
 
-  onSubmit(id) {
+  updateProductForm(product: any) {
+    const updateForm = {
+      productName: product.productName,
+      fullPrice: product.fullPrice,
+      salePrice: product.salePrice,
+      availability: product.availability,
+      category: 'http://localhost:8080/categories/' + product.category.categoryId,
+      supplier: 'http://localhost:8080/suppliers/' + product.supplier.supplierId
+    };
+    this.productForm.patchValue(updateForm);
+  }
+
+  onSubmit(id: number) {
     this.api.updateProduct(id, this.productForm.value).subscribe(res => {
-      document.getElementsByClassName("alert-info")[0].classList.add('d-none');
-      document.getElementsByClassName("alert-success")[0].classList.remove('d-none');
-      document.getElementsByClassName("alert-success")[0].innerHTML = `Product "${this.productForm.value.productName}" successfully updated.`;
+      this.alertType = 'success';
+      this.message = `Product "${this.productForm.value.productName}" successfully updated.`;
       this.populateProductsArray();
       return res;
     });
@@ -142,15 +140,14 @@ export class TableComponent implements OnInit {
 
   deleteProduct(id: number, index: number) {
     this.api.deleteProduct(id).subscribe(() => {
-      this.alertInfo.classList.add('d-none');
-      this.alertSuccess.classList.remove('d-none');
-      this.alertSuccess.innerHTML = `Product #${id}, ${this.products[index].$productName}, successfully removed.`
+      this.alertType = 'success';
+      this.message = `Product #${id}, ${this.products[index].$productName}, successfully removed.`
       this.populateProductsArray();
     });
     $('.close').click();
   }
 
-  toggleSort(field) {
+  toggleSort(field: any) {
     if (!this.sort.includes(`${field},desc`) && !this.sort.includes(`${field},asc`)) {
       this.sort.unshift(`${field},asc`);
     }
@@ -161,12 +158,12 @@ export class TableComponent implements OnInit {
       this.sort.splice(this.sort.indexOf(`${field},desc`), 1)
     }
     this.populateProductsArray();
+    this.showSortOrder();
   }
 
   showSortOrder() {
-    this.alertSuccess.classList.add('d-none');
-    this.alertInfo.classList.remove('d-none');
-    this.alertInfo.innerHTML =
+    this.alertType = "info";
+    this.message =
       `Sort order:${this.sort.map((field, index) =>
         ' <strong>' + (index + 1) + '.</strong> '
         + field.replace("availability,asc", "Available: No")
@@ -177,11 +174,6 @@ export class TableComponent implements OnInit {
           .replace("productName", "Product Name")
           .replace("fullPrice", "Full Price")
           .replace("salePrice", "Sale Price"))}`;
-  }
-values = 0;
-  onKey(event) {
-    if (+event.key > 0)
-    this.values += event.key;
   }
 }
 
