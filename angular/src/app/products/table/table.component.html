@@ -3,11 +3,11 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th><button class="btn btn-link" (click)="toggleSort('id')">ID&nbsp;<fa-icon [icon]="faSort"></fa-icon>
+                <th class="p-2"><button class="btn btn-link" (click)="toggleSort('id')">ID&nbsp;<fa-icon [icon]="faSort"></fa-icon>
                     </button></th>
-                <th><button class="btn btn-link" (click)="toggleSort('productName')">Product&nbsp;Name&nbsp;<fa-icon
+                <th class="p-2"><button class="btn btn-link" (click)="toggleSort('productName')">Product&nbsp;Name&nbsp;<fa-icon
                             [icon]="faSort"></fa-icon></button></th>
-                <th>
+                <th class="p-2 d-none d-sm-table-cell">
                     <div class="dropdown">
                         <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -19,16 +19,16 @@
                         </div>
                     </div>
                 </th>
-                <th><button class="btn btn-link" (click)="toggleSort('fullPrice')">Full&nbsp;Price&nbsp;<fa-icon
+                <th class="p-2 d-none d-sm-table-cell"><button class="btn btn-link" (click)="toggleSort('fullPrice')">Full&nbsp;Price&nbsp;<fa-icon
                             [icon]="faSort"></fa-icon></button></th>
-                <th><button class="btn btn-link" (click)="toggleSort('salePrice')">Sale&nbsp;Price&nbsp;<fa-icon
+                <th class="p-2 d-none d-sm-table-cell"><button class="btn btn-link" (click)="toggleSort('salePrice')">Sale&nbsp;Price&nbsp;<fa-icon
                             [icon]="faSort"></fa-icon></button></th>
-                <th><button class="btn btn-link" (click)="toggleSort('discount')">Discount&nbsp;<fa-icon
+                <th class="p-2 d-none d-sm-table-cell"><button class="btn btn-link" (click)="toggleSort('discount')">Discount&nbsp;<fa-icon
                             [icon]="faSort"></fa-icon></button></th>
-                <th><button class="btn btn-link" (click)="toggleSort('availability')">Available&nbsp;<fa-icon
+                <th class="p-2 d-none d-sm-table-cell"><button class="btn btn-link" (click)="toggleSort('availability')">Available&nbsp;<fa-icon
                             [icon]="faSort"></fa-icon></button>&nbsp;<input type="checkbox" id="checkbox"
                         class="position-relative" (click)="showAvailable()"></th>
-                <th>
+                <th class="p-2 d-none d-sm-table-cell">
                     <div class="dropdown">
                         <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu2"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,20 +40,20 @@
                         </div>
                     </div>
                 </th>
-                <th class="align-middle">Edit/Delete</th>
+                <th class="align-middle p-2">Edit/Delete</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let product of products; let i = index">
-                <td class="align-middle">{{product.id}}</td>
-                <td class="align-middle">{{product.productName}}</td>
-                <td class="align-middle">{{product.category?.categoryName}}</td>
-                <td class="align-middle">{{product.fullPrice | currency:'USD'}}</td>
-                <td class="align-middle">{{product.salePrice | currency:'USD'}}</td>
-                <td class="align-middle">{{product.discount | percent:'.0-1'}}</td>
-                <td class="align-middle">{{product.availability ? 'Yes' : 'No' }}</td>
-                <td class="align-middle">{{product.supplier?.supplierName}}</td>
-                <td class="align-middle text-center" id="product-{{product.id}}">
+                <td class="align-middle p-2">{{product.id}}</td>
+                <td class="align-middle p-2">{{product.productName}}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.category?.categoryName}}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.fullPrice | currency:'USD'}}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.salePrice | currency:'USD'}}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.discount | percent:'.0-1'}}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.availability ? 'Yes' : 'No' }}</td>
+                <td class="align-middle d-none d-sm-table-cell p-2">{{product.supplier?.supplierName}}</td>
+                <td class="align-middle text-center p-2" id="product-{{product.id}}">
                     <div class="btn-group" role="group">
                         <button type="button" (click)="updateProductForm(product)" class="btn btn-secondary" data-toggle="modal"
                             [attr.data-target]="'#updateProduct' + product.id">
