@@ -1,3 +1,5 @@
+<ngb-alert [type]="alertType" [dismissible]="false" [innerHTML]="message"></ngb-alert>
+
 <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead>
@@ -54,7 +56,7 @@
                 <td class="align-middle">{{product.supplier?.supplierName}}</td>
                 <td class="align-middle text-center" id="product-{{product.id}}">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-secondary" data-toggle="modal"
+                        <button type="button" (click)="updateProductForm(product)" class="btn btn-secondary" data-toggle="modal"
                             [attr.data-target]="'#updateProduct' + product.id">
                             <fa-icon [icon]="faEdit"></fa-icon>
                         </button>
@@ -75,14 +77,12 @@
                                         <form [formGroup]="productForm" (ngSubmit)="onSubmit(product.id)">
                                             <div class="form-group">
                                                 <label for="productName">Product Name</label>
-                                                <input type="text" class="form-control" formControlName="productName"
-                                                    value="{{product.productName}}" required>
+                                                <input type="text" class="form-control" formControlName="productName" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="category">Product Category</label>
                                                 <select class="form-control" formControlName="category" required>
-                                                    <option *ngFor="let c of categories" [ngValue]="c._links.self.href"
-                                                        [attr.selected]="product.category.categoryId == c.categoryId ? 'selected' : null">
+                                                    <option *ngFor="let c of categories" [ngValue]="c._links.self.href">
                                                         {{ c.categoryName }}</option>
                                                 </select>
                                             </div>
@@ -95,32 +95,31 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="productPrice">Full Price $</label>
-                                                <input class="m-2" type="number" formControlName="fullPrice"
-                                                    value="{{product.fullPrice}}" required>
+                                                <input class="m-2" type="number" formControlName="fullPrice" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="productSalePrice">Sale Price $</label>
-                                                <input class="m-2" type="number" formControlName="salePrice"
-                                                    value="{{product.salePrice}}" required>
+                                                <input class="m-2" type="number" formControlName="salePrice" required>
                                             </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    <input type="checkbox" class="mb-4" formControlName="availability"
-                                                        [checked]="product.availability">
+                                                    <input type="checkbox" class="mb-4" formControlName="availability">
                                                     Available
                                                 </label>
                                             </div>
                                             <button type="submit" [disabled]="!productForm.valid">Submit</button>
                                         </form>
                                     </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                                </div>
+                            </div>
+                        </div>
 
                         <button type="button" class="btn btn-danger" data-toggle="modal"
                             [attr.data-target]="'#deleteProduct' + product.id">
                             <fa-icon [icon]="faTrashAlt"></fa-icon>
                         </button>
+
+                    </div>
 
                         <div class="modal fade" id="deleteProduct{{product.id}}" tabindex="-1">
                             <div class="modal-dialog" role="document">
@@ -150,7 +149,6 @@
                             </div>
                         </div>
 
-                    </div>
                 </td>
             </tr>
         </tbody>
@@ -158,13 +156,13 @@
 </div>
 <nav aria-label="Table Navigation" class="mt-3">
 
-        <div class="m-2">
-            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="5" [pageSize]="size"
+        <div class="m-2 pagination pagination-sm">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="6" [pageSize]="size"
                 [rotate]="true" [boundaryLinks]="true" (pageChange)="populateProductsArray()">
             </ngb-pagination>
         </div>
         <div class="m-2">
             Items per page: <input type="number" min="1" max="100" step="1" [(ngModel)]="size" required
-                oninput="validity.valid||(value=''); if(size<3)size=3;">
+                oninput="validity.valid||(value='')">
         </div>
 </nav>

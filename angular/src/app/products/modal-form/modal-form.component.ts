@@ -11,8 +11,11 @@ import { ApiService } from 'src/app/services/api.service';
 export class ModalFormComponent implements OnInit {
   faWindowClose = faWindowClose;
 
-  categories;
-  suppliers;
+  categories: [];
+  suppliers: [];
+
+  alertType: string;
+  message: string;
 
 
   productForm = this.fb.group({
@@ -34,9 +37,8 @@ export class ModalFormComponent implements OnInit {
 
   onSubmit() {
     this.api.addProduct(this.productForm.value).subscribe(res => console.log(res));
-    document.getElementsByClassName("alert-info")[0].classList.add('d-none');
-    document.getElementsByClassName("alert-success")[0].classList.remove('d-none');
-    document.getElementsByClassName("alert-success")[0].innerHTML = `Product "${this.productForm.value.productName}" successfully added.`
+    this.alertType = 'success';
+    this.message = `Product "${this.productForm.value.productName}" successfully added.`
     $('.close').click(); 
   }
 
