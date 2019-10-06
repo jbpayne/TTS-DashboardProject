@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Product } from '../../../models/product';
 import { faEdit, faTrashAlt, faSort, faWindowClose, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from 'src/app/services/api.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-table',
@@ -25,8 +26,8 @@ export class TableComponent implements OnInit {
   faSort: IconDefinition = faSort;
   faWindowClose: IconDefinition = faWindowClose;
 
-  alertType: string;
-  message: string;
+  @Output() alert = new EventEmitter();
+  @Input() message: any;
 
   productForm = this.fb.group({
     productName: ['', Validators.required],
@@ -37,12 +38,18 @@ export class TableComponent implements OnInit {
     supplier: ['', Validators.required]
   });
 
-  constructor(private api: ApiService, private fb: FormBuilder) { }
+  constructor(private api: ApiService, private fb: FormBuilder, private refreshService: RefreshService) {
+    refreshService.refresh.subscribe(res => {
+      this.populateProductsArray();
+      this.showSortOrder();
+    });
+  }
 
   ngOnInit() {
     this.page = 0;
     this.size = 3;
     this.sort = ['id,asc'];
+    this.message = 'Sort order: <strong>1.</strong> ID, ascending';
 
     this.populateProductsArray();
     this.populateCategoriesArray();
@@ -72,24 +79,20 @@ export class TableComponent implements OnInit {
 
   populateProductsByCategory(id, name) {
     $("#checkbox").prop("checked", false);
-    this.alertType = 'warning';
-    this.message = `Loading products from category: ${name}`;
+    this.alert.emit({type: `warning`, message: `Loading products from category: ${name}`});
     this.api.getProductsByCategory(id).subscribe((res: any) => {
       this.collectionSize = 1;
-      this.alertType = 'info';
-      this.message = `<strong>Filter:</strong> All products in category: ${name}`;
+      this.alert.emit({type: 'info', message: `<strong>Filter:</strong> All products in category: ${name}`});
       return this.products = res.map(this.createProduct());
     });
   }
 
   populateProductsBySupplier(id, name) {
     $("#checkbox").prop("checked", false);
-    this.alertType = 'warning';
-    this.message = `Loading products from supplier: ${name}`;
+    this.alert.emit({type: 'warning', message: `Loading products from supplier: ${name}`});
     this.api.getProductsBySupplier(id).subscribe((res: any) => {
       this.collectionSize = 1;
-      this.alertType = 'info';
-      this.message = `<strong>Filter:</strong> All products from supplier: ${name}`;
+      this.alert.emit({type: 'info', message: `<strong>Filter:</strong> All products from supplier: ${name}`});
       return this.products = res.map(this.createProduct());
     });
   }
@@ -107,8 +110,7 @@ export class TableComponent implements OnInit {
   showAvailable() {
     if ($("#checkbox").is(':checked')) {
       this.products = this.products.filter(product => product.$availability === true);
-      this.alertType = 'info';
-      this.message += `<strong> - Available: Yes</strong>`
+      this.alert.emit({type: 'info', message: this.message + `<strong> - Available: Yes</strong>`});
     }
     else {
       this.populateProductsArray();
@@ -130,8 +132,7 @@ export class TableComponent implements OnInit {
 
   onSubmit(id: number) {
     this.api.updateProduct(id, this.productForm.value).subscribe(res => {
-      this.alertType = 'success';
-      this.message = `Product "${this.productForm.value.productName}" successfully updated.`;
+      this.alert.emit({type: 'success', message: `Product "${this.productForm.value.productName}" successfully updated.`});
       this.populateProductsArray();
       return res;
     });
@@ -140,8 +141,7 @@ export class TableComponent implements OnInit {
 
   deleteProduct(id: number, index: number) {
     this.api.deleteProduct(id).subscribe(() => {
-      this.alertType = 'success';
-      this.message = `Product #${id}, ${this.products[index].$productName}, successfully removed.`
+      this.alert.emit({type: 'success', message: `Product #${id}, ${this.products[index].$productName}, successfully removed.`});
       this.populateProductsArray();
     });
     $('.close').click();
@@ -162,8 +162,7 @@ export class TableComponent implements OnInit {
   }
 
   showSortOrder() {
-    this.alertType = "info";
-    this.message =
+    this.alert.emit({type: "info", message:
       `Sort order:${this.sort.map((field, index) =>
         ' <strong>' + (index + 1) + '.</strong> '
         + field.replace("availability,asc", "Available: No")
@@ -173,7 +172,7 @@ export class TableComponent implements OnInit {
           .replace("id", "ID")
           .replace("productName", "Product Name")
           .replace("fullPrice", "Full Price")
-          .replace("salePrice", "Sale Price"))}`;
+          .replace("salePrice", "Sale Price"))}`});
   }
 }
 

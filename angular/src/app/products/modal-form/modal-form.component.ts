@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from 'src/app/services/api.service';
@@ -14,9 +14,7 @@ export class ModalFormComponent implements OnInit {
   categories: [];
   suppliers: [];
 
-  alertType: string;
-  message: string;
-
+  @Output() alert = new EventEmitter();
 
   productForm = this.fb.group({
     productName: ['', Validators.required],
@@ -27,19 +25,12 @@ export class ModalFormComponent implements OnInit {
     supplier: ['', Validators.required]
   });
 
-  
+
   constructor(private fb: FormBuilder, private api: ApiService) { }
 
   ngOnInit() {
     this.populateCategoriesArray();
     this.populateSuppliersArray();
-  }
-
-  onSubmit() {
-    this.api.addProduct(this.productForm.value).subscribe(res => console.log(res));
-    this.alertType = 'success';
-    this.message = `Product "${this.productForm.value.productName}" successfully added.`
-    $('.close').click(); 
   }
 
   populateCategoriesArray() {
@@ -48,6 +39,14 @@ export class ModalFormComponent implements OnInit {
 
   populateSuppliersArray() {
     this.api.getSuppliers().subscribe(res => this.suppliers = res);
+  }
+
+  onSubmit() {
+    this.api.addProduct(this.productForm.value).subscribe((res: any) => {
+      this.alert.emit({ type: `success`, message: `Product "${res.productName}" successfully added.` });
+      $('.close').click();
+    });
+
   }
 
 }

@@ -1,19 +1,17 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm main">
-            <h1 class="page-header">Dashboard:</h1>
-
             <h2 class="sub-header m-2">Products</h2>
 
-            <!-- Add Product Form -->
-            <app-modal-form></app-modal-form>
+            <app-modal-form (alert)="sendAlert($event)"></app-modal-form>
 
-            <button type="button" class="btn btn-secondary-outline mb-2" (click)="reload()">
+            <button type="button" class="btn btn-secondary-outline mb-2" (click)="refresh()">
                 <fa-icon [icon]="faSync"></fa-icon>
             </button>
 
-            <!-- Table -->
-            <app-table></app-table>
+            <ngb-alert [type]="alertType" [dismissible]="false" [innerHTML]="message"></ngb-alert>
+
+            <app-table (alert)="sendAlert($event)" [message]="message"></app-table>
 
         </div>
     </div>
