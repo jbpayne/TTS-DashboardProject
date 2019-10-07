@@ -3,9 +3,9 @@ export class Supplier {
   private supplierName: string;
 
 
-	constructor($supplierId: number, $supplierName: string) {
-		this.supplierId = $supplierId;
-		this.supplierName = $supplierName;
+	constructor(supplierId: number, supplierName: string) {
+		this.supplierId = supplierId;
+		this.supplierName = supplierName;
 	}
 
 

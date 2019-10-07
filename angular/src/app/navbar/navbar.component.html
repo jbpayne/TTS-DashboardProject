@@ -7,8 +7,8 @@
       <div class="navbar-nav">
           <a class="nav-item nav-link active" (click)="toggleNavbar()" href="#">Home <span class="sr-only">(current)</span></a>
           <a class="nav-item nav-link" (click)="toggleNavbar()" routerLink="/products" routerLinkActive="active">Products</a>
-          <a class="nav-item nav-link" href="#">Categories</a>
-          <a class="nav-item nav-link" href="#">Suppliers</a>
+          <a class="nav-item nav-link" (click)="toggleNavbar()" routerLink="/categories" routerLinkActive="active">Categories</a>
+          <a class="nav-item nav-link" (click)="toggleNavbar()" routerLink="/suppliers" routerLinkActive="active">Suppliers</a>
       </div>
   </div>
 </nav>

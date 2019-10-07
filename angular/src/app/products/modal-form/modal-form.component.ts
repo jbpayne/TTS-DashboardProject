@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from 'src/app/services/api.service';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
   selector: 'app-modal-form',
@@ -26,7 +27,7 @@ export class ModalFormComponent implements OnInit {
   });
 
 
-  constructor(private fb: FormBuilder, private api: ApiService) { }
+  constructor(private fb: FormBuilder, private api: ApiService, private refreshService: RefreshService) { }
 
   ngOnInit() {
     this.populateCategoriesArray();
@@ -43,6 +44,7 @@ export class ModalFormComponent implements OnInit {
 
   onSubmit() {
     this.api.addProduct(this.productForm.value).subscribe((res: any) => {
+      this.refreshService.refresh.emit();
       this.alert.emit({ type: `success`, message: `Product "${res.productName}" successfully added.` });
       $('.close').click();
     });

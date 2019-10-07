@@ -4,7 +4,6 @@ import { SharedModule } from '../shared/shared.module';
 import { ProductsPageComponent } from './products-page/products-page.component';
 import { TableComponent } from './table/table.component';
 import { ModalFormComponent } from './modal-form/modal-form.component';
-import { PageNavbarComponent } from './page-navbar/page-navbar.component';
 import { ModuleRouting } from './products-routing.module';
 import { ApiService } from '../services/api.service';
 
@@ -13,7 +12,6 @@ import { ApiService } from '../services/api.service';
 @NgModule({
   declarations: [
     ProductsPageComponent,
-    PageNavbarComponent,
     TableComponent,
     ModalFormComponent
   ],
@@ -24,8 +22,7 @@ import { ApiService } from '../services/api.service';
   ],
   exports: [
     TableComponent,
-    ModalFormComponent,
-    PageNavbarComponent
+    ModalFormComponent
   ],
   providers: [
     ApiService

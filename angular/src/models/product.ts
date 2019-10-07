@@ -1,7 +1,3 @@
-import { Category } from './category';
-import { Supplier } from './supplier';
-import { Observable } from 'rxjs';
-
 export class Product {
   private id: number;
   private productName: string;

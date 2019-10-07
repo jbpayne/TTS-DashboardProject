@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faSync, faEdit, faTrashAlt, faWindowClose, faSort } from '@fortawesome/free-solid-svg-icons';
-import { AlertsComponent } from './alerts/alerts.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,12 +12,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
   ],
   declarations: [
-    AlertsComponent
   ],
   exports: [
     HttpClientModule,
     FontAwesomeModule,
-    AlertsComponent,
     NgbModule,
     FormsModule,
     ReactiveFormsModule
@@ -32,4 +29,4 @@ export class SharedModule {
 
 }
 
-export { AlertsComponent };
+export { };

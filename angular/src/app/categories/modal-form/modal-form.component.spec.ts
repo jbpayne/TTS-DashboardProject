@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageNavbarComponent } from './page-navbar.component';
+import { ModalFormComponent } from './modal-form.component';
 
-describe('PageNavbarComponent', () => {
-  let component: PageNavbarComponent;
-  let fixture: ComponentFixture<PageNavbarComponent>;
+describe('ModalFormComponent', () => {
+  let component: ModalFormComponent;
+  let fixture: ComponentFixture<ModalFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageNavbarComponent ]
+      declarations: [ ModalFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PageNavbarComponent);
+    fixture = TestBed.createComponent(ModalFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

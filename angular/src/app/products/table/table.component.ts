@@ -58,7 +58,7 @@ export class TableComponent implements OnInit {
   }
 
   private setCollectionSize() {
-    this.api.getCollectionSize().subscribe(res => this.collectionSize = res);
+    this.api.getProductsCollectionSize().subscribe(res => this.collectionSize = res);
   }
 
   private populateCategoriesArray() {
