@@ -2,9 +2,9 @@ export class Category {
   private categoryId: number;
   private categoryName: string;
 
-	constructor($categoryId: number, $categoryName: string) {
-		this.categoryId = $categoryId;
-		this.categoryName = $categoryName;
+	constructor(categoryId: number, categoryName: string) {
+		this.categoryId = categoryId;
+		this.categoryName = categoryName;
 	}
 
     /**

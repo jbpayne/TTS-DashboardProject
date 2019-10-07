@@ -1,0 +1,100 @@
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="p-2"><button class="btn btn-link" (click)="toggleSort('supplierId')">ID&nbsp;<fa-icon [icon]="faSort"></fa-icon>
+                    </button></th>
+                <th class="p-2"><button class="btn btn-link" (click)="toggleSort('supplierName')">Supplier&nbsp;Name&nbsp;<fa-icon
+                            [icon]="faSort"></fa-icon></button></th>
+                <th class="align-middle p-2">Edit/Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let supplier of suppliers; let i = index">
+                <td class="align-middle p-2">{{supplier.supplierId}}</td>
+                <td class="align-middle p-2">{{supplier.supplierName}}</td>
+                <td class="align-middle text-center p-2" id="supplier-{{supplier.supplierId}}">
+                    <div class="btn-group" role="group">
+                        <button type="button" (click)="updateSupplierForm(supplier)" class="btn btn-secondary" data-toggle="modal"
+                            [attr.data-target]="'#updateSupplier' + supplier.supplierId">
+                            <fa-icon [icon]="faEdit"></fa-icon>
+                        </button>
+
+                        <div class="modal fade" id="updateSupplier{{supplier.supplierId}}" tabindex="-1">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">
+                                            <span>Update Supplier</span>
+                                        </h4>
+                                        <button type="button" class="btn btn-link close ml-auto" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">
+                                                <fa-icon [icon]="faWindowClose"></fa-icon>
+                                            </span></button>
+                                    </div>
+                                    <div class="modal-body text-left p-4">
+                                        <form [formGroup]="supplierForm" (ngSubmit)="onSubmit(supplier.supplierId)">
+                                            <div class="form-group">
+                                                <label for="supplierName">Supplier Name</label>
+                                                <input type="text" class="form-control" formControlName="supplierName" required>
+                                            </div>
+                                            <button type="submit" [disabled]="!supplierForm.valid">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                            [attr.data-target]="'#deleteSupplier' + supplier.supplierId">
+                            <fa-icon [icon]="faTrashAlt"></fa-icon>
+                        </button>
+
+                    </div>
+
+                        <div class="modal fade" id="deleteSupplier{{supplier.supplierId}}" tabindex="-1">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="modal-title">Delete Supplier</h4>
+                                        <button type="button" class="btn btn-link close ml-auto" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">
+                                                <fa-icon [icon]="faWindowClose"></fa-icon>
+                                            </span></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Are you sure you want to delete <p class="text-primary">
+                                                    Supplier ID# {{supplier.supplierId}}, "{{supplier.supplierName}}"?</p></strong>
+                                        </p>
+                                        <p>All information associated with this supplier will be permanently deleted.
+                                            <span class="text-danger">This operation can not be undone.</span>
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
+                                            aria-label="Cancel">Cancel</button>
+                                        <button type="button" class="btn btn-danger"
+                                            (click)="deleteSupplier(supplier.supplierId, i)">Ok</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<nav aria-label="Table Navigation" class="mt-3">
+
+        <div class="m-2 pagination pagination-sm">
+            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="6" [pageSize]="size"
+                [rotate]="true" [boundaryLinks]="true" (pageChange)="populateSuppliersArray()">
+            </ngb-pagination>
+        </div>
+        <div class="m-2">
+            Items per page: <input type="number" min="1" max="100" step="1" [(ngModel)]="size" required
+                oninput="validity.valid||(value='')">
+        </div>
+</nav>

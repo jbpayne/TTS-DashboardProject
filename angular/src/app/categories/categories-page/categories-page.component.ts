@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { RefreshService } from 'src/app/services/refresh.service';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { RefreshService } from 'src/app/services/refresh.service';
 
 @Component({
-  selector: 'app-suppliers-page',
-  templateUrl: './suppliers-page.component.html',
-  styleUrls: ['./suppliers-page.component.css']
+  selector: 'app-categories-page',
+  templateUrl: './categories-page.component.html',
+  styleUrls: ['./categories-page.component.css']
 })
-export class SuppliersPageComponent implements OnInit {
+export class CategoriesPageComponent implements OnInit {
   alertType: string;
   message: string;
 
